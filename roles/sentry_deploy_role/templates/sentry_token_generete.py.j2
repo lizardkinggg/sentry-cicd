@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+import sys
+from sentry.runner import configure
+configure()
+from sentry.models import ApiToken
+from sentry.models import User
+username = "{{ sentry_user_email }}"
+API_token = "77f77bf5240f43829c9d609da5f1dd849a9eebbe95354af79bb85d3fe2c9b16d"
+try:
+    user = User.objects.get(username=username)
+    ApiToken.objects.create(user=user, token=API_token, scopes=0,
+                            scope_list=['event:admin', 'event:read', 'event:write', 'member:admin', 'member:read', 'member:write', 'org:admin', 'org:read', 'org:write', 'org:integrations', 'project:admin', 'project:read', 'project:write',
+                                        'project:releases', 'team:admin', 'team:read', 'team:write'])
+except Exception as e:
+    print("failed to create Sentry API token: %s" % (e,))

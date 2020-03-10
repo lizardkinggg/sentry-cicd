@@ -1,0 +1,108 @@
+---
+# tasks file for sentry_monitoring_role
+- name: Install nginx
+  apt:
+    name: nginx=1.14.*
+
+############ Install stackdriver-agent ################
+
+- name: Copy monitoring-agent script
+  copy:
+    src: install-monitoring-agent.sh
+    dest: /home/{{ ansible_user }}/{{ project_name }}/
+
+- name: Run script
+  shell:
+    cmd: bash install-monitoring-agent.sh
+    chdir: /home/{{ ansible_user }}/{{ project_name }}/
+
+############ Monitoring setup for Nginx ###############
+
+- name: Enable the status information handler in Nginx
+  copy:
+    src: status.conf
+    dest: /etc/nginx/conf.d/
+
+- name: Reload the Nginx configuration
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Enable the Nginx monitoring plugin
+  copy:
+    src: nginx.conf
+    dest: /opt/stackdriver/collectd/etc/collectd.d/
+
+############ Monitoring setup for memcached ###########
+
+- name: Enable the memcached monitoring plugin
+  copy:
+    src: memcached.conf
+    dest: /opt/stackdriver/collectd/etc/collectd.d/
+
+- name: Create credential destonation folder
+  file:
+    path: /etc/google/auth
+    state: directory
+
+- name: Add credential
+  copy:
+    src: application_default_credentials.json
+    dest: /etc/google/auth
+    owner: root
+    group: root
+    mode: '0400'
+
+
+############ Monitoring setup for Zookeeper ###########
+- name: Enable the Zookeeper monitoring plugin
+  copy:
+    src: zookeeper.conf
+    dest: /opt/stackdriver/collectd/etc/collectd.d/
+
+############ Monitoring setup for Redis ###############
+- name: Install hiredis client library
+  apt:
+    name: libhiredis0.13
+
+- name: Copy the Redis configuration file
+  copy:
+    src: redis.conf
+    dest: /opt/stackdriver/collectd/etc/collectd.d/
+
+############ Monitoring setup for Postgres ############
+- name: Create db-user
+  shell:
+    cmd: docker-compose exec postgres psql -c 'CREATE USER "stack-driver";' -U postgres
+    chdir: /home/{{ ansible_user }}/{{ project_name }}
+    ignore_errors: yes
+
+- name: Create db
+  shell:
+    cmd: docker-compose exec postgres psql -c 'CREATE DATABASE test_db;' -U postgres
+    chdir: /home/{{ ansible_user }}/{{ project_name }}
+    ignore_errors: yes
+
+- name: Give grant privileges
+  shell:
+    cmd: docker-compose exec postgres psql -c 'GRANT ALL PRIVILEGES ON DATABASE test_db
+    chdir: /home/{{ ansible_user }}/{{ project_name }}
+    ignore_errors: yes
+
+
+- name: Install "libpq5"
+  apt:
+    name: libpq5
+
+- name: Enable the Postgres monitoring plugin
+  copy:
+    src: postgresql.conf
+    dest: /opt/stackdriver/collectd/etc/collectd.d/
+
+############ Restart the monitoring agent #############
+
+- name: Restart the monitoring agent
+  service:
+    name: stackdriver-agent
+    state: restarted
+...

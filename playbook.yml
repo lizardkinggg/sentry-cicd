@@ -1,0 +1,15 @@
+---
+#- hosts: flask
+#  become: true
+#  gather_facts: no
+#  roles:
+#     - { role: flask_role }
+
+- hosts: sentry
+  become: true
+  gather_facts: no
+  roles:
+     - { role: sentry_deploy_role }
+     - { role: sentry_monitoring_role }
+
+...

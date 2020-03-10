@@ -1,0 +1,51 @@
+---
+# tasks file for sentry_deploy
+- name: Copy files
+  synchronize:
+    src: .     
+    dest: /home/{{ ansible_user }}/{{ project_name }}
+
+- name: Copy Dockerfile template
+  template:
+    src: Dockerfile.j2
+    dest: /home/{{ ansible_user }}/{{ project_name }}/sentry/Dockerfile
+
+- name: Copy install script template
+  template:
+    src: install.sh.j2
+    dest: /home/{{ ansible_user }}/{{ project_name }}/install.sh
+    mode: +x
+
+- name: Copy sentry script
+  template:
+    src: sentry_token_generete.py.j2
+    dest: /home/{{ ansible_user }}/{{ project_name }}/sentry/sentry_token_generete.py
+    mode: +x
+
+- name: Make deploy
+  shell:
+    cmd: bash install.sh
+    chdir: /home/{{ ansible_user }}/{{ project_name }}/ 
+
+- name: Create sentry user
+  shell:
+    cmd: docker-compose run --rm web createuser --superuser --email '{{ sentry_user_email }}' --password '{{ sentry_user_password }}'
+    chdir: /home/{{ ansible_user }}/{{ project_name }}/ 
+  ignore_errors: yes
+
+- name: Up all containers
+  shell:
+    cmd: docker-compose up -d
+    chdir: /home/{{ ansible_user }}/{{ project_name }}/ 
+
+- name: Make migration
+  shell: docker exec -t {{ project_name }}_web_1 sentry upgrade
+
+- name: Generete token
+  shell: docker exec -d {{ project_name }}_web_1 ./sentry_token_generete.py
+
+#- name: Delete deploy files
+#  file: 
+#    path: /home/'{{ ansible_user }}'/'{{ project_name }}'
+#    state: absent
+...

@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventOrGroupTitle renders with no subtitle when \`type = default\` 1`] = `
+<span>
+  metadata title
+</span>
+`;
+
+exports[`EventOrGroupTitle renders with subtitle when \`type = csp\` 1`] = `
+<span>
+  <span>
+    metadata directive
+  </span>
+  <Spacer />
+  <em
+    title="metadata uri"
+  >
+    metadata uri
+  </em>
+  <br />
+</span>
+`;
+
+exports[`EventOrGroupTitle renders with subtitle when \`type = error\` 1`] = `
+<span>
+  <span>
+    metadata type
+  </span>
+  <Spacer />
+  <em
+    title="culprit"
+  >
+    culprit
+  </em>
+  <br />
+</span>
+`;

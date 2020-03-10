@@ -1,0 +1,174 @@
+/**
+* Inbound Data Filters
+* ============================================================================
+*/
+
+.filtered-stats-barchart {
+  height: 100px;
+
+  a,
+  g {
+    > span,
+    > rect,
+    &:hover > rect {
+      left: 2px;
+      right: 2px;
+
+      &.ip-address {
+        background: @red-light;
+        fill: @red-light;
+      }
+
+      &.release-version {
+        background: @purple-light;
+        fill: @purple-light;
+      }
+
+      &.error-message {
+        background: @purple;
+        fill: @purple;
+      }
+
+      &.browser-extensions {
+        background: @gray;
+        fill: @gray;
+      }
+
+      &.legacy-browsers {
+        background: @gray-light;
+        fill: @gray-light;
+      }
+
+      &.localhost {
+        background: @blue;
+        fill: @blue;
+      }
+
+      &.web-crawlers {
+        background: @red;
+        fill: @red;
+      }
+
+      &.invalid-csp {
+        background: @blue-light;
+        fill: @blue-light;
+      }
+
+      &.cors {
+        background: @orange;
+        fill: @orange;
+      }
+    }
+  }
+}
+
+.legend {
+  padding: 3px 0;
+  position: relative;
+  line-height: 10px;
+
+  dt {
+    margin: 0;
+    position: absolute;
+    left: 0;
+    width: 8px;
+    margin-right: 5px;
+
+    span {
+      &.ip-address {
+        background: @red-light;
+      }
+
+      &.release-version {
+        background: @purple-light;
+      }
+
+      &.error-message {
+        background: @purple;
+      }
+
+      &.browser-extensions {
+        background: @gray;
+      }
+
+      &.legacy-browsers {
+        background: @gray-light;
+      }
+
+      &.localhost {
+        background: @blue;
+      }
+
+      &.web-crawlers {
+        background: @red;
+      }
+
+      &.invalid-csp {
+        background: @blue-light;
+      }
+
+      &.cors {
+        background: @orange;
+      }
+    }
+  }
+}
+
+/**
+* Rules
+* ============================================================================
+*/
+
+.rules-list {
+  h6 {
+    margin-bottom: 15px;
+  }
+  .table {
+    margin: 0;
+  }
+}
+
+.rules-list,
+.rule-detail {
+  h6 {
+    font-weight: 600;
+
+    strong {
+      padding: 1px 5px;
+      border-radius: 2px;
+      background: @white-darker;
+      margin-right: 2px;
+    }
+  }
+
+  .box-content {
+    padding-bottom: 20px !important;
+  }
+
+  .table {
+    border: 0;
+    border-radius: 3px;
+
+    tr:nth-child(odd) td {
+      background: @white-darker;
+    }
+  }
+
+  .add {
+    margin-bottom: 20px;
+  }
+
+  .conditions-list td,
+  .actions-list td {
+    padding: 10px 12px !important;
+    font-size: 13px;
+
+    a {
+      color: lighten(@gray, 30);
+
+      &:hover {
+        color: @gray;
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+#!groovy
+// Run docker build
+
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent { 
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '1', artifactNumToKeepStr: '1'))
+        timestamps()
+    }
+    stages {
+	stage("test linter") {
+            steps {
+                echo " ============== start testing linter =================="
+                        sh """./testlinter.sh
+                        """
+            }
+        }
+	stage("create docker image") {
+            steps {
+                echo " ============== start building image =================="
+                withCredentials([usernamePassword(credentialsId: 'gitlab_prod', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh """
+                        docker login tfgitlab.danjake.opensource-ukraine.org:5050 -u $USERNAME -p $PASSWORD
+                        docker build -t tfgitlab.danjake.opensource-ukraine.org/danjake/sentry:5050  -f docker/Dockerfile .
+                        docker push tfgitlab.danjake.opensource-ukraine.org/danjake/sentry:5050
+                        """
+                }
+            }
+        }
+
+        stage("deploy ansible") {
+            steps {
+                echo " ============== start creatingg hello.txt =================="
+                        sh """ansible-vault decrypt id_rsa --vault-password-file sxvova-pass.txt
+                        """
+
+                        sh """ansible-playbook playbook.yml --vault-password-file sxvova-pass.txt
+                        """
+            }
+        }
+    }
+}

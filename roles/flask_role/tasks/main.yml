@@ -1,0 +1,35 @@
+---
+# tasks file for flask_role
+- name: Copy docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: docker-compose.yml
+
+- name: Copy changer script
+  copy:
+    src: changer.sh
+    dest: changer.sh
+    mode: +x
+
+- name: Copy .env file
+  copy: 
+    src: .env
+    dest: .env
+
+- name: Copy file with dsn
+  copy:
+    src: file_with_dsn
+    dest: file_with_dsn
+ 
+- name: Make changes
+  shell: bash changer.sh
+
+- name: Docker stop
+  shell: docker-compose stop {{ registry_admin }}    
+
+- name: Make deploy
+  shell: docker-compose up -d {{ registry_admin }}
+
+#- name: Remove docker-compose.yml
+#  file: path=docker-compose.yml state=absent
+...

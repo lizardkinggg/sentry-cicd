@@ -1,0 +1,4 @@
+[flask]
+tfflask.danjake.opensource-ukraine.org
+[sentry]
+tfsentry.danjake.opensource-ukraine.org

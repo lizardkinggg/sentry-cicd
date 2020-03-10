@@ -1,0 +1,91 @@
+{% extends "sentry/emails/activity/generic.html" %}
+
+{% load sentry_avatars %}
+{% load sentry_helpers %}
+{% load sentry_assets %}
+
+{% block activity %}
+    <table>
+      <tr>
+        <td>
+        <h3 class="alert-title">
+            <a class="alert-title-link" href="{{ link }}">{{ incident_name }}</a>
+        </h3>
+        </td>
+        <td>
+          <div class="alert-header">
+          Status
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Created on {{ triggered_at }}
+        </td>
+        <td>
+          {% if is_critical %}
+            <img class="alert-critical" src="{% absolute_asset_url 'sentry' 'images/email/icon-circle-exclamation.png' %}" width="16px" height="16px" alt="Critical" />
+          {% elif is_warning %}
+            <img class="alert-warning" src="{% absolute_asset_url 'sentry' 'images/email/icon-warning.png' %}" width="16px" height="16px" alt="Warning" />
+          {% endif %}
+
+          <span class="alert-status">{{ status }}</span>
+        </td>
+      </tr>
+    </table>
+
+
+    <hr />
+
+  {% if enhanced_privacy %}
+    <div class="notice">
+      Details about this alert are not shown in this email since enhanced privacy
+      controls are enabled. For more details about this alert, <a href="{{ link }}">view on Sentry.</a>
+    </div>
+
+  {% else %}
+      <table class="alert-rule-table">
+        <thead>
+          <th>
+            Metric
+          </th>
+          <th>
+            Environment
+          </th>
+          <th>
+            Threshold
+          </th>
+          <th>
+            Time Interval
+          </th>
+        </thead>
+
+        <tbody>
+        <tr>
+          <td>
+            {{ aggregate }}
+          </td>
+          <td>
+            {{ environment }}
+          </td>
+        <td>
+          {{ threshold_direction_string }} {{ threshold }}
+          </td>
+          <td>
+            {{ time_window }}
+          </td>
+
+
+        </tbody>
+      </table>
+
+      <div>
+        <div class="alert-header">
+          Query
+        </div>
+        <div class="alert-query-box">
+          {{ query }}
+        </div>
+      </div>
+  {% endif %}
+{% endblock %}
