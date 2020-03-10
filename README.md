@@ -114,7 +114,7 @@ Once the Jenkins repository is enabled, update the **`apt`** package list and in
 
 ### 1.6 Pipeline for Sentry 
 
-> Created CI / CD for Sentry located in **`main.jenkins`** file
+> Created CI / CD for Sentry located in [main.jenkins](https://github.com/lizardkinggg/sentry-cicd/blob/master/main.jenkins) file
 
 ### 1.7 Pipeline for Flask app 
 
